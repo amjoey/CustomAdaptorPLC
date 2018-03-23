@@ -1,9 +1,7 @@
 package com.amjoey.customadaptorplc;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 
 /**
  * Created by Administrator on 14/3/2561.
@@ -27,30 +23,54 @@ public class MyArrayAdaptor  extends ArrayAdapter<String> {
     private final int[] itTime;
 
 
+
     public MyArrayAdaptor(Activity context, String[] titles, int[] times) {
         super(context, R.layout.row_layout, titles);
         this.context = context;
         this.itTitle = titles;
         this.itTime = times;
     }
+
+    static class ViewHolder{
+        TextView tvTitle;
+        EditText etTime;
+        ImageButton imgbutton;
+    }
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
+        ViewHolder viewHolder;
+        View rowView = convertView;
+        Log.d("Myarrayadaptor",String.valueOf(position));
 
-        Log.d("myarrayadaptor",String.valueOf(position));
-        LayoutInflater inflater = context.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.row_layout,null,true);
-        //View inputView = inflater.inflate(R.layout.input_box,null,true);
+        if(rowView == null){
+            Log.d("Myarrayadaptor","New Create");
+            LayoutInflater inflater = context.getLayoutInflater();
+            rowView = inflater.inflate(R.layout.row_layout,null,true);
 
-        TextView tvTitle = (TextView) rowView.findViewById(R.id.textView);
-        EditText etTime = (EditText) rowView.findViewById(R.id.editText);
+            viewHolder = new ViewHolder();
+            viewHolder.tvTitle = (TextView) rowView.findViewById(R.id.textView);
+            viewHolder.etTime = (EditText) rowView.findViewById(R.id.editText);
 
 
-        tvTitle.setText(itTitle[position]);
-        etTime.setText(timeformat(itTime[position]));
+            rowView.setTag(viewHolder);
+        }else{
+            Log.d("Myarrayadapter","Use Reuse");
+            viewHolder = (ViewHolder) rowView.getTag();
+        }
 
-        ImageButton imgbutton = (ImageButton) rowView.findViewById(R.id.imageButton);
-        imgbutton.setOnClickListener(new View.OnClickListener() {
+        viewHolder.tvTitle.setText(itTitle[position]);
+        viewHolder.etTime.setText(timeformat(itTime[position]));
+
+
+
+
+
+
+
+        viewHolder.imgbutton = (ImageButton) rowView.findViewById(R.id.imageButton);
+        viewHolder.imgbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
               //  Toast.makeText(context, timeformat(itTime[position]), 0).show();
@@ -68,7 +88,7 @@ public class MyArrayAdaptor  extends ArrayAdapter<String> {
         dialog.setTitle("Input Box");
         dialog.setContentView(R.layout.input_box);
 
-      EditText editText=(EditText)dialog.findViewById(R.id.txtinput);
+         EditText editText=(EditText)dialog.findViewById(R.id.txtinput);
         editText.setText(oldItem);
 
 
